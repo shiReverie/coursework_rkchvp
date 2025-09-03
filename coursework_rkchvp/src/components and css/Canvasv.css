@@ -1,0 +1,43 @@
+canvas {
+    border: 1px solid #63636e;
+    margin: 50px;
+}
+
+.buttonText {
+    margin: 0.5rem;
+    position: absolute;
+    top: 72px;
+    left: 0px;
+}
+
+.buttonImage {
+    margin: 0.5rem;
+    position: absolute;
+    top: 144px;
+    left: 0px;
+}
+
+.buttonBg {
+    margin: 0.5rem;
+    position: absolute;
+    top: 216px;
+    left: 0px;
+}
+
+.buttonBB {
+    margin: 0.5rem;
+    position: absolute;
+    top: 288px;
+    left: 0px;
+}
+
+.buttonSave {
+    margin: 0.5rem;
+    position: absolute;
+    top: 360px;
+    left: 0px;
+}
+
+
+
+

@@ -1,0 +1,53 @@
+canvas {
+    border: 1px solid #63636e;
+    margin: 50px;
+}
+
+.buttonAddtext {
+    margin: 0.5rem;
+    position: absolute;
+    top: 72px;
+    left: 0px;
+}
+.buttonAddimage {
+    margin: 0.5rem;
+    position: absolute;
+    top: 144px;
+    left: 0px;
+}
+.buttonChangeBackground {
+    margin: 0.5rem;
+    position: absolute;
+    top: 216px;
+    left: 0px;
+}
+.buttonTemplates {
+    margin: 0.5rem;
+    position: absolute;
+    top: 288px;
+    left: 0px;
+}
+
+.buttonBrandBook {
+    margin: 0.5rem;
+    position: absolute;
+    top: 360px;
+    left: 0px;
+}
+.buttonSaveCanvas {
+    margin: 0.5rem;
+    position: absolute;
+    top: 432px;
+    left: 0px;
+}
+.modal_win {
+    width: 300px;
+    height: auto;
+    text-align: justify;
+    vertical-align: super;
+    top: 72px;
+    position: sticky;
+}
+.modal_content {
+    padding: 0.5rem
+}

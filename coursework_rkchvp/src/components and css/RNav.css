@@ -1,0 +1,11 @@
+.navLink {
+    color: #29292d;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+
+}
+
+    .navLink:hover {
+        color: #161618;
+        text-decoration: underline;
+    }
