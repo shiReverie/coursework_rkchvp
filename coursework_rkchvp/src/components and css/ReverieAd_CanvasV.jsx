@@ -12,9 +12,7 @@ function VideoCanvas() {
     const backgroundVideoRef = useRef(null);
     const animationFrameRef = useRef(null);
 
-    // Layers: Only text & image layers (no video layers)
     const [layers, setLayers] = useState([]);
-    // Background: either a color or a video (from file upload or URL)
     const [background, setBackground] = useState({ type: "color", value: "#ffffff" });
     const [selectedLayerId, setSelectedLayerId] = useState(null);
 
@@ -73,14 +71,11 @@ function VideoCanvas() {
     // ---------- Canvas Drop Handler ----------
     const handleCanvasDrop = (event) => {
         event.preventDefault();
-        // Retrieve dropped data as text.
         const droppedColor = event.dataTransfer.getData('text/plain');
         const droppedImage = event.dataTransfer.getData('text/plain');
         if (droppedColor.startsWith('#')) {
-            // If the dropped text begins with "#", treat it as a color.
             setBackground({ type: "color", value: droppedColor });
         } else if (droppedImage.startsWith('data:image')) {
-            // If the dropped text is a data URL for an image, add it as a new image layer.
             const img = new Image();
             img.onload = () => {
                 addImageLayer(img);
@@ -90,14 +85,12 @@ function VideoCanvas() {
     };
 
     // ---------- Drawing & Animation ----------
-    // The first 1 second (progress from 0 to 1) is used for transition animations.
     const drawFrame = (progress) => {
         const canvas = canvasRef.current;
         if (!canvas) return;
         const ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Draw background.
         if (background.type === "color") {
             ctx.fillStyle = background.value;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -115,18 +108,16 @@ function VideoCanvas() {
             try {
                 ctx.drawImage(backgroundVideoRef.current, 0, 0, canvas.width, canvas.height);
             } catch (err) {
-                // Video likely isn't ready yet.
+                // Video isn't ready yet
             }
         }
 
-        // Draw layers.
         layers.forEach((layer) => {
             if (layer.type === "textbox") {
                 ctx.save();
                 let x = layer.x;
                 let opacity = 1;
                 let displayText = layer.text;
-                // Text animations.
                 if (layer.animation === "slide") {
                     x = lerp(-canvas.width, layer.x, progress);
                 } else if (layer.animation === "fade") {
@@ -142,11 +133,10 @@ function VideoCanvas() {
                 ctx.textAlign = layer.alignment;
                 ctx.fillText(displayText, x, layer.y);
 
-                // Draw border if text layer is selected.
                 if (layer.isSelected) {
                     const metrics = ctx.measureText(displayText);
                     const textWidth = metrics.width;
-                    const textHeight = layer.size; // Approximate.
+                    const textHeight = layer.size; 
                     let rectX;
                     if (layer.alignment === "center") rectX = x - textWidth / 2;
                     else if (layer.alignment === "right") rectX = x - textWidth;
@@ -162,7 +152,7 @@ function VideoCanvas() {
                 let x = layer.x;
                 let opacity = 1;
                 let scale = 1;
-                // Image animations.
+
                 if (layer.animation === "fade") {
                     opacity = progress;
                 } else if (layer.animation === "zoom") {
@@ -186,7 +176,6 @@ function VideoCanvas() {
                         ctx.strokeStyle = "#63636e";
                         ctx.lineWidth = 2;
                         ctx.strokeRect(x, layer.y, layer.width, layer.height);
-                        // Draw a resize handle (small filled rectangle) at the bottom-right.
                         const handleSize = 10;
                         ctx.fillStyle = "#63636e";
                         ctx.fillRect(x + layer.width - handleSize, layer.y + layer.height - handleSize, handleSize, handleSize);
@@ -197,7 +186,7 @@ function VideoCanvas() {
         });
     };
 
-    // Animation loop.
+
     useEffect(() => {
         let startTime = performance.now();
         const animate = (time) => {
@@ -214,7 +203,7 @@ function VideoCanvas() {
     const saveVideo = () => {
         const canvas = canvasRef.current;
         if (!canvas) return;
-        const stream = canvas.captureStream(30); // 30 FPS.
+        const stream = canvas.captureStream(30);
         const mimeType = MediaRecorder.isTypeSupported("video/mp4")
             ? "video/mp4"
             : "video/webm";
@@ -252,7 +241,7 @@ function VideoCanvas() {
             size: 40,
             font: "Arial",
             alignment: "center",
-            animation: "none", // Options: none, slide, fade, typing.
+            animation: "none", 
             isSelected: false,
         };
         setLayers((prev) => [...prev, newLayer]);
@@ -267,7 +256,7 @@ function VideoCanvas() {
             y: 100,
             width: img.width,
             height: img.height,
-            animation: "none", // Options: none, fade, zoom, slide.
+            animation: "none", 
             isSelected: false,
         };
         setLayers((prev) => [...prev, newLayer]);
@@ -287,7 +276,6 @@ function VideoCanvas() {
         }
     };
 
-    // Using your working function exactly as provided.
     const addImageFromUrl = () => {
         if (imageUrl) {
             const img = new Image();
@@ -309,8 +297,6 @@ function VideoCanvas() {
         }
     };
 
-    
-
     const resetBackground = () => {
         setBackground({ type: "color", value: "#ffffff" });
     };
@@ -324,12 +310,10 @@ function VideoCanvas() {
         const isRightClick = e.button === 2;
         const handleSize = 10;
 
-        // Iterate layers from topmost to bottom.
+
         for (let i = layers.length - 1; i >= 0; i--) {
             const layer = layers[i];
-            // Handle image layers first.
             if (layer.type === "image") {
-                // Check if mouse is over the resize handle.
                 if (
                     mouseX >= layer.x + layer.width - handleSize &&
                     mouseX <= layer.x + layer.width &&
@@ -346,13 +330,11 @@ function VideoCanvas() {
                     };
                     return;
                 }
-                // If right-click, open the image animation modal.
                 if (isRightClick) {
                     selectLayer(layer.id);
                     setIsImageAnimationModalVisible(true);
                     return;
                 }
-                // Else, if click is within the image area, enable moving.
                 if (
                     mouseX >= layer.x &&
                     mouseX <= layer.x + layer.width &&
@@ -441,8 +423,8 @@ function VideoCanvas() {
         e.preventDefault();
     };
     const { t } = useTranslation();
+
     // ---------- Modal Renderers ----------
-    // Text Editing Modal.
     const renderTextEditingModal = () => {
         const layer = layers.find((l) => l.id === selectedLayerId && l.type === "textbox");
         if (!layer) return null;
@@ -512,7 +494,6 @@ function VideoCanvas() {
         );
     };
 
-    // Image Animation Modal.
     const renderImageAnimationModal = () => {
         const layer = layers.find((l) => l.id === selectedLayerId && l.type === "image");
         if (!layer) return null;
@@ -544,7 +525,6 @@ function VideoCanvas() {
         );
     };
 
-    // ---------- Render JSX ----------
     return (
         <div>
             <div style={{ marginBottom: "10px" }}>

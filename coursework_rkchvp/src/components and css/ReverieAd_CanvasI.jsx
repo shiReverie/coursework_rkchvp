@@ -11,7 +11,6 @@ import './i18n';
 
 function BannerCanvas() {
     // -------- Combined Layers State ----------
-    // Each layer is an object with an id, a type ("image" or "textbox"), and its own drawing properties
     const [layers, setLayers] = useState([]);
     const [isSaveModalVisible, setIsSaveModalVisible] = useState(false);
     const [selectedFormat, setSelectedFormat] = useState("png");
@@ -47,10 +46,8 @@ function BannerCanvas() {
     }, [layers, background]);
 
     const drawCanvas = (ctx) => {
-        // Clear canvas first
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-        // Draw background
         if (background.type === "color") {
             ctx.fillStyle = background.value;
             ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -82,10 +79,8 @@ function BannerCanvas() {
         const droppedImage = event.dataTransfer.getData('text/plain');
 
         if (droppedColor.startsWith('#')) {
-            // Add a new colored background layer
             setBackground({ type: "color", value: droppedColor });
         } else if (droppedImage.startsWith('data:image')) {
-            // Add the dropped image as a new image layer
             const img = new Image();
             img.onload = () => {
                 addImageLayer(img);
@@ -95,7 +90,7 @@ function BannerCanvas() {
     };
     const handleTemplateApply = (data) => {
         console.log("Selected Template Data:", data);
-        // Example logic to add template to layers
+
         setLayers((prevLayers) => [
             ...prevLayers,
             {
@@ -116,7 +111,7 @@ function BannerCanvas() {
     const drawLayers = (ctx) => {
         layers.forEach((layer) => {
             if (layer.type === "image") {
-                // Draw image layer as before.
+
                 ctx.drawImage(layer.img, layer.x, layer.y, layer.width, layer.height);
                 if (layer.isSelected) {
                     ctx.strokeStyle = "#63636e";
@@ -124,48 +119,39 @@ function BannerCanvas() {
                     ctx.strokeRect(layer.x, layer.y, layer.width, layer.height);
                 }
             } else if (layer.type === "textbox") {
-                // Set up font and baseline
+
                 ctx.font = `${layer.size}px ${layer.font}`;
                 ctx.textBaseline = 'middle';
-                ctx.textAlign = layer.alignment; // "left", "center", or "right"
+                ctx.textAlign = layer.alignment;
 
-                // Choose a padding value (in pixels) for space around the text within the box
                 const padding = 5;
 
-                // Calculate the background rectangle's X coordinate, width, Y coordinate, and height.
-                // We assume that layer.width is the desired content width of the text box.
                 let rectX, textX;
 
                 if (layer.alignment === "center") {
-                    // For center alignment, assume layer.x is the horizontal center.
                     rectX = layer.x - layer.width / 2 - padding;
-                    textX = layer.x; // Draw text centered at layer.x
+                    textX = layer.x; 
                 } else if (layer.alignment === "right") {
-                    // For right alignment, assume layer.x is the right edge.
                     rectX = layer.x - layer.width - padding;
-                    textX = layer.x; // Draw text at the right edge
+                    textX = layer.x; 
                 } else {
-                    // For left alignment, assume layer.x is the left edge.
                     rectX = layer.x - padding;
-                    textX = layer.x; // Draw text at the left edge
+                    textX = layer.x; 
                 }
 
                 const rectWidth = layer.width + 2 * padding;
-                // For vertical positioning, assume layer.y is the vertical center.
-                // The rectangle extends half the text's height above and half below, with extra padding.
                 const rectY = layer.y - layer.size / 2 - padding;
                 const rectHeight = layer.size + 2 * padding;
 
-                // Draw the background rectangle using transparency.
+   
                 const alpha = layer.backgroundTransparency / 100;
                 ctx.fillStyle = `rgba(${hexToRgb(layer.backgroundColor)}, ${alpha})`;
                 ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
 
-                // Draw the text itself, using the computed textX and centered vertically at layer.y.
                 ctx.fillStyle = layer.color;
                 ctx.fillText(layer.text, textX, layer.y);
 
-                // If this layer is selected, draw a border around the box.
+           
                 if (layer.isSelected) {
                     ctx.strokeStyle = "#63636e";
                     ctx.lineWidth = 2;
@@ -230,7 +216,7 @@ function BannerCanvas() {
                    
                 }
 
-                // Draw PNG overlay if available (applies to all templates)
+                // Draw PNG overlay 
                 if (layer.pngImage) {
                     const img = new Image();
                     img.src = layer.pngImage;
@@ -370,18 +356,18 @@ function BannerCanvas() {
         const mouseY = e.clientY - rect.top;
         const isRightClick = e.button === 2;
 
-        // Check layers from topmost (last in array) to bottom
+      
         for (let i = layers.length - 1; i >= 0; i--) {
             const layer = layers[i];
             if (layer.type === "image") {
                 if (mouseX >= layer.x && mouseX <= layer.x + layer.width && mouseY >= layer.y && mouseY <= layer.y + layer.height) {
                     selectLayer(layer.id);
                     if (isRightClick) {
-                        // Right-click: Move image
+                     
                         setIsMoving(true);
                         dragOffsetRef.current = { offsetX: mouseX - layer.x, offsetY: mouseY - layer.y };
                     } else {
-                        // Left-click: Resize image
+                       
                         setIsResizing(true);
                         resizeStartRef.current = {
                             startX: mouseX,
@@ -393,20 +379,17 @@ function BannerCanvas() {
                     return;
                 }
             } else if (layer.type === "textbox") {
-                // Simple hit detection for text: assume bounding box based on layer.x, layer.y, layer.width, and layer.size
+                
                 const rectX = layer.x - 5;
                 if (mouseX >= rectX && mouseX <= rectX + layer.width + 10 && mouseY >= layer.y - layer.size && mouseY <= layer.y - layer.size + layer.size + 5) {
                     selectLayer(layer.id);
-                    // For text, we allow moving on left-click.
                     setIsMoving(true);
-                    dragOffsetRef.current = { offsetX: mouseX - layer.x, offsetY: mouseY - layer.y };
-                    // On right-click, open the text editing modal.
+                    dragOffsetRef.current = { offsetX: mouseX - layer.x, offsetY: mouseY - layer.y }; 
                     if (isRightClick) setIsTextModalVisible(true);
                     return;
                 }
             }
         }
-        // If nothing is clicked, clear selection.
         clearSelection();
     };
 

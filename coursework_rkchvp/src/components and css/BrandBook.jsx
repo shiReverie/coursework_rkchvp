@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 function BrandBook({ onColorSelect, onImageSelect }) {
     const [newColor, setNewColor] = useState('#ffffff');
 
-    // Load colors and images from local storage
+
     const [colors, setColors] = useState(() => {
         return JSON.parse(localStorage.getItem("brandColors")) || [];
     });
@@ -13,7 +13,7 @@ function BrandBook({ onColorSelect, onImageSelect }) {
         return JSON.parse(localStorage.getItem("brandImages")) || [];
     });
 
-    // Add new color
+ 
     const handleAddColor = () => {
         if (newColor && !colors.includes(newColor)) {
             const updatedColors = [...colors, newColor];
@@ -22,14 +22,12 @@ function BrandBook({ onColorSelect, onImageSelect }) {
         }
     };
 
-    // Remove a color
     const handleDeleteColor = (colorToRemove) => {
         const updatedColors = colors.filter((color) => color !== colorToRemove);
         setColors(updatedColors);
         localStorage.setItem("brandColors", JSON.stringify(updatedColors));
     };
 
-    // Upload new image
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -43,7 +41,6 @@ function BrandBook({ onColorSelect, onImageSelect }) {
         }
     };
 
-    // Remove an image
     const handleDeleteImage = (imageToRemove) => {
         const updatedImages = images.filter((imgUrl) => imgUrl !== imageToRemove);
         setImages(updatedImages);

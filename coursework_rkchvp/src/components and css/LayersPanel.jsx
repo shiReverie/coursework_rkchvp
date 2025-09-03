@@ -4,7 +4,6 @@ function LayersPanel({ layers, setLayers, deleteLayerHandler }) {
 
     const [isExpanded, setIsExpanded] = useState(false);
 
-    // Handle drag–and–drop ordering of layers
     const handleDragStart = (e, index) => {
         e.dataTransfer.setData("dragIndex", index);
     };

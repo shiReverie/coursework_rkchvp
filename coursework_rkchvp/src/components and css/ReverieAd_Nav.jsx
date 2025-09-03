@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import './i18n'; 
 import VideoCreator from './ReverieAd_CanvasV';
 
-// Sample pages with translation support
+
 const Rhome = () => {
     const { t } = useTranslation();
     return (
