@@ -1,10 +1,20 @@
 import { defineConfig } from 'vite';
-import plugin from '@vitejs/plugin-react';
+import reactPlugin from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [plugin()],
+    plugins: [
+        reactPlugin()
+    ],
     server: {
-        port: 51735,
+        port: 51735
+    },
+    build: {
+        rollupOptions: {
+            external: [
+                'react',
+                'react-dom',
+                'react-bootstrap'
+            ]
+        }
     }
-})
+});
